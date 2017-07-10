@@ -1,0 +1,16 @@
+{
+  "name": "stratroulette",
+  "version": "1.0.0",
+  "description": "Strat Roulette API with node.js",
+  "main": "app.js",
+  "author": "Dim",
+  "private": true,
+  "scripts": {
+    "start": "sudo node app.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "cors": "*",
+    "express": "*"
+  }
+}
