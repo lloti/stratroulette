@@ -9,7 +9,6 @@ const strats = require('./components/strats.json');
 const fs = require('fs');
 
 // Express Stuff
-const minify = require('express-minify');
 const cors = require('cors');
 
 // Express w/ socket.io
@@ -20,7 +19,7 @@ const server = app.listen(5000);
 const io = socket.listen(server);
 
 // Express
-app.use(cors(), minify());
+app.use(cors());
 app.get('/json', require('./components/json'));
 app.get('/api', require('./components/api'));
 app.use('/', express.static('./public'));

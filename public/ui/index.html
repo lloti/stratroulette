@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Dim, dimggyt@gmail.com">
+  <meta name="description" content="Strat Roulette for CS:GO randomly generates hundreds of community made strats">
+  <meta name="keywords" content="rest, api, strat roulette, csgo">
+  <meta name="owner" content="Dim">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>StratRoulette</title>
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Raleway:500,400">
+  <style media="screen">
+  html {
+    height: 100%;
+    background: #000;
+    color: #fff;
+    font-family: 'Raleway', sans-serif;
+    text-align: center;
+  }
+  body {
+    margin: 10px;
+  }
+  body > div {
+    width: 100%;
+    margin: 0 auto;
+    border: 2px solid #424242;
+  }
+  h1 {
+    font-size: 50px;
+  }
+  form > div {
+    display: inline-block;
+  }
+  span,
+  label,
+  input,
+  select,
+  option {
+    margin-bottom: 10px;
+    font-weight: lighter;
+    font-size: 16px;
+  }
+  select {
+    background: #fff;
+  }
+  .accepted {
+    color: #29ffb8;
+  }
+  #theme {
+    top: 0;
+    left: 0;
+    position: absolute;
+    margin: 5px;
+    z-index: 99;
+  }
+  #copy {
+    margin: 0;
+    background: rgba(255,255,255,.15);
+    display: inline-block;
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    -webkit-transition: box-shadow 400ms ease-in-out;
+    transition: box-shadow 400ms ease-in-out;
+  }
+  #copy:hover {
+    box-shadow: 0 0 8px -1px #fff;
+  }
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 24px;
+    }
+  }
+  </style>
+</head>
+<body>
+  <input type="checkbox" id="theme">
+  <div>
+    <h1>StratRoulette</h1>
+    <form>
+      <div>
+        <label for="map">Map: </label>
+        <select id="map">
+          <option value="general">All Maps</option>
+          <option value="agency">Agency</option>
+          <option value="assault">Assault</option>
+          <option value="austria">Austria</option>
+          <option value="aztec">Aztec</option>
+          <option value="blackgold">Black Gold</option>
+          <option value="cache">Cache</option>
+          <option value="canals">Canals</option>
+          <option value="cobblestone">Cobblestone</option>
+          <option value="dust">Dust</option>
+          <option value="dust2">Dust 2</option>
+          <option value="inferno">Inferno</option>
+          <option value="insertion">Insertion</option>
+          <option value="italy">Italy</option>
+          <option value="lite">Lite</option>
+          <option value="militia">Militia</option>
+          <option value="mirage">Mirage</option>
+          <option value="nuke">Nuke</option>
+          <option value="office">Office</option>
+          <option value="overpass">Overpass</option>
+          <option value="shipped">Shipped</option>
+          <option value="thrill">Thrill</option>
+          <option value="train">Train</option>
+          <option value="vertigo">Vertigo</option>
+        </select>
+      </div>
+      <div>
+        <label for="side">Side: </label>
+        <select id="side">
+          <option value="Both">Both</option>
+          <option value="CT">CT</option>
+          <option value="T">T</option>
+        </select>
+      </div>
+      <br>
+      <input type="submit" value="New Strat">
+    </form>
+    <div id="output"></div>
+  </div>
+  <script type="text/javascript">
+    /*
+      Start of stolen functions
+    */
+    Element.prototype.remove = function() {
+      this.parentElement.removeChild(this);
+    }
+    NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
+      for(var i = this.length - 1; i >= 0; i--) {
+        if(this[i] && this[i].parentElement) {
+          this[i].parentElement.removeChild(this[i]);
+        }
+      }
+    }
+    function getJSON(url, callback) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('get', url, true);
+      xhr.responseType = 'json';
+      xhr.onload = function() {
+        var status = xhr.status;
+        if (status == 200) {
+          callback(null, xhr.response);
+        } else {
+          callback(status);
+        }
+      };
+      xhr.send();
+    };
+    /*
+      End of stolen functions
+    */
+    function lightOn() {
+      var css = document.createElement('style');
+      css.id = 'css';
+      css.innerHTML = 'html{color:#000;background:#a1ffce;background:-webkit-linear-gradient(315deg,#a1ffce 0,#faffd1 100%);background:linear-gradient(135deg,#a1ffce 0,#faffd1 100%)}body>div{border:2px solid #000}#copy{background:rgba(0, 0, 0, 0.15)}';
+      document.body.append(css);
+      localStorage.setItem('theme', 'light');
+    }
+    function lightOff() {
+      document.getElementById('css').remove();
+      localStorage.setItem('theme', 'dark');
+    }
+    function copyText(text) {
+      var c = document.createElement('textarea');
+      c.id = 'c';
+      c.innerHTML = text;
+      // Top Left
+      c.style.position = 'fixed';
+      c.style.top = 0;
+      c.style.left = 0;
+      // Big enough to work ( ͡° ͜ʖ ͡°)
+      c.style.width = '2em';
+      c.style.height = '2em';
+      // Remove useless ouside
+      c.style.padding = 0;
+      c.style.border = 'none';
+      c.style.outline = 'none';
+      c.style.boxShadow = 'none';
+      document.body.append(c);
+      var e = document.getElementById('c');
+      e.focus();
+      e.select();
+      if (document.execCommand('copy')) document.execCommand('copy');
+      else if (window.clipboardData.setData) window.clipboardData.setData('Text', text);
+      else window.prompt('Your browser doesn\'t support copying, just press CTRL+C to copy the text', text);
+      c.remove();
+    }
+    if (localStorage.getItem('theme') === 'light') {
+      document.getElementById('theme').checked = true;
+      lightOn();
+    }
+    document.getElementsByTagName('form')[0].onsubmit = function() {
+      var map = document.getElementById('map').value;
+      var side = document.getElementById('side').value;
+      var url = '/api?map=' + map + '&side=' + side;
+      getJSON(url, function(err, json) {
+        document.getElementById('output').innerHTML = '<span>Title: '+json.title+'<br>Description: '+json.text+'<br><div id="copy">Copy Description To ClipBoard</div><br>By: '+json.contrib+'<br>Side: '+json.side+'</span>';
+        document.getElementById('copy').onclick = function() {
+          copyText(json.text);
+          this.innerHTML = 'Copied';
+          this.onclick = function() {
+            return false;
+          }
+        };
+      });
+      return false;
+    };
+    document.getElementById('theme').onchange = function() {
+      if (this.checked) {
+        lightOn();
+      } else {
+        lightOff();
+      }
+    };
+  </script>
+</body>
+</html>

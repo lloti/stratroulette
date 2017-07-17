@@ -7,9 +7,14 @@ module.exports = (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   (roll = () => {
     let strat = stratConcat[Math.floor(Math.random() * stratConcat.length)];
-    if (strat.side === 'Both' || strat.side === stratSide.toUpperCase()) {
-      res.json(strat);
-    } else {
+    try {
+      if (typeof strat.side !== 'undefined' && strat.side === 'Both' || strat.side === stratSide.toUpperCase()) {
+        res.json(strat);
+      } else {
+        roll();
+      }
+    }
+    catch(err) {
       roll();
     }
   })();
