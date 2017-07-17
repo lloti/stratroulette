@@ -158,7 +158,7 @@
     function lightOn() {
       var css = document.createElement('style');
       css.id = 'css';
-      css.innerHTML = 'html{color:#000;background:#a1ffce;background:-webkit-linear-gradient(315deg,#a1ffce 0,#faffd1 100%);background:linear-gradient(135deg,#a1ffce 0,#faffd1 100%)}body>div{border:2px solid #000}#copy{background:rgba(0, 0, 0, 0.15)}';
+      css.innerHTML = 'html{color:#fff;background:#24c6dc;background:-webkit-linear-gradient(to left,#514a9d,#24c6dc);background:-webkit-linear-gradient(right,#514a9d,#24c6dc);background:linear-gradient(to left,#514a9d,#24c6dc)}body>div{border:2px solid #fff}#copy{background:rgba(0,0,0,.15)}';
       document.body.append(css);
       localStorage.setItem('theme', 'light');
     }
@@ -196,9 +196,11 @@
       lightOn();
     }
     document.getElementsByTagName('form')[0].onsubmit = function() {
-      var map = document.getElementById('map').value;
-      var side = document.getElementById('side').value;
-      var url = '/api?map=' + map + '&side=' + side;
+      var mapVal = document.getElementById('map').value;
+      var map = mapVal === 'general' ? '' : '?map=' + mapVal;
+      var sideVal = document.getElementById('side').value;
+      var side = map === '' ? '?side=' +  sideVal : '&side=' + sideVal;
+      var url = '/api' + map + side;
       getJSON(url, function(err, json) {
         document.getElementById('output').innerHTML = '<span>Title: '+json.title+'<br>Description: '+json.text+'<br><div id="copy">Copy Description To ClipBoard</div><br>By: '+json.contrib+'<br>Side: '+json.side+'</span>';
         document.getElementById('copy').onclick = function() {
