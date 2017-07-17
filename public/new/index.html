@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Dim, dimggyt@gmail.com">
+  <meta name="description" content="Simple API for CS:GO Strat Roulette">
+  <meta name="keywords" content="rest, api, strat roulette, csgo">
+  <meta name="owner" content="Dim">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Submit New Strat</title>
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Raleway:500,400">
+  <style media="screen">
+    html {
+      background: #000;
+      color: #fff;
+      font-family: 'Raleway', sans-serif;
+      text-align: center;
+      margin: 10px;
+    }
+    body {
+      margin: 0;
+    }
+    body > div {
+      width: 100%;
+      margin: 0 auto;
+      border: 2px solid #424242;
+    }
+    h1 {
+      font-size: 50px;
+    }
+    span,
+    label,
+    input,
+    select,
+    option {
+      margin-bottom: 10px;
+      font-weight: lighter;
+      font-size: 16px;
+    }
+    select {
+      background: #fff;
+    }
+    .accepted {
+      color: #29ffb8;
+    }
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h1>Submit New Strat</h1>
+    <form>
+      <div>
+        <label for="title">Title: </label><input type="text" id="title">
+      </div>
+      <div>
+        <label for="text">Text: </label><input type="text" id="text">
+      </div>
+      <div>
+        <label for="map">Map: </label>
+        <select id="map">
+          <option value="general">All Maps</option>
+          <option value="agency">Agency</option>
+          <option value="assault">Assault</option>
+          <option value="austria">Austria</option>
+          <option value="aztec">Aztec</option>
+          <option value="blackgold">Black Gold</option>
+          <option value="cache">Cache</option>
+          <option value="canals">Canals</option>
+          <option value="cobblestone">Cobblestone</option>
+          <option value="dust">Dust</option>
+          <option value="dust2">Dust 2</option>
+          <option value="inferno">Inferno</option>
+          <option value="insertion">Insertion</option>
+          <option value="italy">Italy</option>
+          <option value="lite">Lite</option>
+          <option value="militia">Militia</option>
+          <option value="mirage">Mirage</option>
+          <option value="nuke">Nuke</option>
+          <option value="office">Office</option>
+          <option value="overpass">Overpass</option>
+          <option value="shipped">Shipped</option>
+          <option value="thrill">Thrill</option>
+          <option value="train">Train</option>
+          <option value="vertigo">Vertigo</option>
+        </select>
+      </div>
+      <div>
+        <label for="side">Side: </label>
+        <select id="side">
+          <option value="Both">Both</option>
+          <option value="CT">CT</option>
+          <option value="T">T</option>
+        </select>
+      </div>
+      <div>
+        <label for="contrib">Contributor: </label><input type="text" id="contrib" value="/u/DimMagician">
+      </div>
+      <input type="submit" value="submit">
+    </form>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" charset="utf-8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    var io = io();
+    io.on('accepted', function() {
+      $('body > div').append('<span class="accepted">Strat sent, now waiting to be approved.</span>');
+      setTimeout(function() {
+        $('.accepted:last-child').remove();
+      }, 3000)
+    });
+    $(function() {
+      if (localStorage.getItem('password')) {
+        $('input[type="password"]').val(localStorage.getItem('password'));
+        io.emit('password', localStorage.getItem('password'));
+      }
+      $('form').submit(function() {
+        io.emit('new', {
+          "title": $('#title').val(),
+          "text": $('#text').val(),
+          "contrib": $('#contrib').val(),
+          "side": $('#side').val(),
+          "map": $('#map').val()
+        });
+        return false;
+      });
+    });
+  </script>
+</body>
+</html>

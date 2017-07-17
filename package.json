@@ -1,16 +1,14 @@
 {
-  "name": "stratroulette",
+  "name": "strat-roulette-api",
   "version": "1.0.0",
-  "description": "Strat Roulette API with node.js",
+  "description": "REST API for stratroulette.com using express",
   "main": "app.js",
   "author": "Dim",
-  "private": true,
-  "scripts": {
-    "start": "sudo node app.js"
-  },
   "license": "MIT",
   "dependencies": {
     "cors": "*",
-    "express": "*"
+    "express": "*",
+    "express-minify": "*",
+    "socket.io": "*"
   }
 }

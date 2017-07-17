@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Dim, dimggyt@gmail.com">
+  <meta name="description" content="Simple API for CS:GO Strat Roulette">
+  <meta name="keywords" content="rest, api, strat roulette, csgo">
+  <meta name="owner" content="Dim">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Admin</title>
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Raleway:500,400">
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <style media="screen">
+    html {
+      background: #000;
+      color: #fff;
+      font-family: 'Raleway', sans-serif;
+      text-align: center;
+      margin: 10px;
+    }
+    body {
+      margin: 0;
+    }
+    body > div {
+      width: 100%;
+      margin: 0 auto;
+      border: 2px solid #424242;
+    }
+    h1 {
+      font-size: 50px;
+    }
+    body > div > span {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bolder;
+      font-size: 20px;
+    }
+    a {
+      color: #bbb;
+      text-decoration: none;
+    }
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 24px;
+      }
+      span {
+        font-size: 14px;
+      }
+      div > div {
+        font-size: 10px;
+      }
+    }
+    .container {
+      width: 90%;
+      margin: 10px auto;
+      border: 2px solid #424242;
+    }
+    .container > div {
+      padding: 5px 0;
+    }
+    .container > div.title {
+      font-size: 18px;
+    }
+    .container > div.text {
+      font-size: 16px;
+    }
+    .container > div.info {
+      font-size: 14px;
+    }
+    .rating > i {
+      cursor: pointer;
+      padding: 10px;
+      font-size: 20px;
+    }
+    .ion-checkmark-round {
+      color: #29ffb8;
+    }
+    .ion-close-round {
+      color: #6a0404;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h1>Admin</h1>
+    <span>
+      <form>
+        <input type="password" name="password">
+        <input type="submit" value="submit">
+      </form>
+    </span>
+    <div id="lol"></div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" charset="utf-8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    var io = io();
+    io.on('login', function(data) {
+      localStorage.setItem('password', $('input[type="password"]').val());
+      $('form').remove();
+      $('span').append('Logged In');
+    });
+    io.on('reload', function(data) {
+      $('#lol').html('');
+      for (var i in data){
+        var obj = data[i];
+        $('#lol').append(`
+        <div class="container" json-data="${i}">
+          <div class="title">${obj.title}</div>
+          <div class="text">${obj.text}</div>
+          <div class="info"><span class="map">${obj.map}</span> || <span class="side">${obj.side}</span> || <span class="contrib">${obj.contrib}</span></div>
+          <div class="rating">
+            <i class="ion-checkmark-round"></i>
+            <i class="ion-close-round"></i>
+          </div>
+        </div>
+        `);
+      }
+      $('.ion-checkmark-round').click(function() {
+        io.emit('add', $(this).parent().parent().attr('json-data'));
+      });
+      $('.ion-close-round').click(function() {
+        io.emit('remove', $(this).parent().parent().attr('json-data'));
+      });
+    });
+    io.on('failedPassword', function() {
+      var pswd = document.createElement('span');
+      pswd.append(document.createTextNode('Wrong Password'));
+      pswd.style.color = 'red';
+      pswd.style.padding = 20;
+      pswd.style.display = 'block';
+      document.getElementsByTagName('span')[0].append(pswd);
+      setTimeout(function(){
+        pswd.remove();
+      }, 3000)
+    });
+    $(function() {
+      if (localStorage.getItem('password')) {
+        $('input[type="password"]').val(localStorage.getItem('password'));
+        io.emit('password', localStorage.getItem('password'));
+      }
+      $('form').submit(function() {
+        io.emit('password', $('input[type="password"]').val());
+        return false;
+      });
+    });
+  </script>
+</body>
+</html>
