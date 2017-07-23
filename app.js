@@ -96,11 +96,29 @@ io.sockets.on('connection', (socket) => {
       'T'
     ];
     if (maps.includes(json.map) && sides.includes(json.side)) {
-      socket.emit('accepted');
       fs.readFile('./components/_strats.json', 'utf8', (err, data) => {
         let json2 = JSON.parse(data);
-        json2.push(json);
-        fs.writeFile('./components/_strats.json', JSON.stringify(json2));
+        let original = false;
+        let str = strats[json.map];
+        for (let i=0;i<str.length;i++) {
+          if (json.title !== str[i].title || json.text !== str[i].text) {
+            original = true;
+          }
+        }
+        if (original) {
+          for (let i=0;i<json2.length;i++) {
+            if (json2[i].title !== str[i].title || json2[i].text !== str[i].text) {
+              original = true;
+            }
+          }
+        }
+        if (original) {
+          socket.emit('accepted');
+          json2.push(json);
+          fs.writeFile('./components/_strats.json', JSON.stringify(json2));
+        } else {
+          socket.emit('copy');
+        }
       });
     }
   });

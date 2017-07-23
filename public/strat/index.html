@@ -159,7 +159,7 @@
       var css = document.createElement('style');
       css.id = 'css';
       css.innerHTML = 'html{color:#fff;background:#24c6dc;background:-webkit-linear-gradient(to left,#514a9d,#24c6dc);background:-webkit-linear-gradient(right,#514a9d,#24c6dc);background:linear-gradient(to left,#514a9d,#24c6dc)}body>div{border:2px solid #fff}#copy{background:rgba(0,0,0,.15)}';
-      document.body.append(css);
+      document.body.appendChild(css);
       localStorage.setItem('theme', 'light');
     }
     function lightOff() {

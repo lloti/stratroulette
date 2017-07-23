@@ -9,6 +9,7 @@
     "cors": "*",
     "express": "*",
     "express-minify": "*",
+    "request": "^2.81.0",
     "socket.io": "*"
   }
 }
