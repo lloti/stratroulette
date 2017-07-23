@@ -20,6 +20,7 @@ const io = socket.listen(server);
 
 // Express
 app.use(cors());
+app.get('/discord', require('./components/discord');)
 app.get('/json', require('./components/json'));
 app.get('/api', require('./components/api'));
 app.use('/', express.static('./public'));
